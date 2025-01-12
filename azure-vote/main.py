@@ -15,8 +15,8 @@ connection_string = "InstrumentationKey=be12f6f5-a07b-4e44-83ec-739d13e5787a"
 
 # Logging
 logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler(connection_string))
-logger.addHandler(AzureEventHandler(connection_string))
+logger.addHandler(AzureLogHandler(connection_string=connection_string))
+logger.addHandler(AzureEventHandler(connection_string=connection_string))
 
 # Metrics
 exporter = metrics_exporter.new_metrics_exporter(
@@ -25,14 +25,14 @@ exporter = metrics_exporter.new_metrics_exporter(
 
 # Tracing
 tracer = Tracer(
-    exporter=AzureExporter(connection_string),
+    exporter=AzureExporter(connection_string=connection_string),
     sampler=ProbabilitySampler(1.0),
 )
 
 app = Flask(__name__)
 
 # Requests
-middleware = FlaskMiddleware(app, exporter=AzureExporter(connection_string), sampler=ProbabilitySampler(rate=1.0))
+middleware = FlaskMiddleware(app, exporter=AzureExporter(connection_string=connection_string), sampler=ProbabilitySampler(rate=1.0))
 # Load configurations from environment or config file
 app.config.from_pyfile('config_file.cfg')
 
